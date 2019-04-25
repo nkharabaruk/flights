@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flights</title>
+    <style>
+        table {
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+        }
+        table, td, th {
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<table id="flights">
+    <tr>
+        <th>Flight No.</th>
+        <th>Destination</th>
+        <th>Destination Airport</th>
+        <th>Departure</th>
+        <th></th>
+    </tr>
+</table>
+</body>
+<script>
+    window.onload = () => {
+        var request = new XMLHttpRequest();
+
+        request.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                console.log(this.responseText);
+                displayFlights(JSON.parse(this.responseText));
+            }
+        };
+
+        request.open('GET', `http://localhost:8080/flights?timestamp=${Date.now()}`);
+        request.send();
+    };
+
+    const displayFlights = flights =>
+        flights.forEach(flight => {
+            document.getElementById('flights').innerHTML += '<tr>' +
+                `<td>${flight.flightNo}</td>` +
+                `<td>${flight.destination}</td>` +
+                `<td>${flight.destinationAirportIATA}</td>` +
+                `<td>${flight.departureTime}</td>` +
+                `<td>${flight.departed ? 'Departed' : ''}</td>` +
+                '</tr>';
+        })
+</script>
+</html>
